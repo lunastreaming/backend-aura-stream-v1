@@ -1,0 +1,28 @@
+package com.example.aurastream.model;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class SettingRequest {
+
+    @DecimalMin(value = "0", message = "valueNum debe ser >= 0")
+    @Digits(integer = 19, fraction = 2, message = "Formato de valueNum inválido")
+    private BigDecimal number;
+
+    // Añadimos el campo para el Switch
+    private Boolean valueBool;
+
+    // opcional: campo adicional para comentarios o descripción del cambio
+    private String comment;
+
+}

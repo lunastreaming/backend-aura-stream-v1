@@ -1,0 +1,21 @@
+package com.example.aurastream.scheduler;
+
+import com.example.aurastream.repository.ProviderProfileRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+@Component
+@RequiredArgsConstructor
+public class ProviderStatusScheduler {
+
+    private final ProviderProfileRepository providerProfileRepository;
+
+    @Scheduled(cron = "0 0 22 * * *", zone = "America/Lima")
+    @Transactional
+    public void deactivateProviders() {
+        providerProfileRepository.updateAllStatusInactiveExceptEmergency();
+    }
+
+}

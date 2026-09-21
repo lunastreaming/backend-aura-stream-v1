@@ -1,0 +1,19 @@
+package com.example.aurastream.repository;
+
+import com.example.aurastream.model.ExchangeRate;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long> {
+
+    @Query("SELECT e FROM ExchangeRate e ORDER BY e.createdAt DESC")
+    List<ExchangeRate> findLatestRate(Pageable pageable);
+
+
+    Optional<ExchangeRate> findFirstByOrderByCreatedAtDesc();
+
+}

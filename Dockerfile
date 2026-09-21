@@ -15,4 +15,4 @@ RUN ./mvnw clean package -DskipTests
 EXPOSE 8080
 
 # Comando para ejecutar la app
-CMD ["java", "-jar", "target/fluxstreaming-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "target/aurastream-0.0.1-SNAPSHOT.jar"]
