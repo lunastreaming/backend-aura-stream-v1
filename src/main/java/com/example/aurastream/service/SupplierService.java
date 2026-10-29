@@ -31,7 +31,7 @@ public class SupplierService {
         }
 
         // 1. Obtener descuento desde settings
-        Optional<SettingEntity> discountSetting = settingRepository.findByKeyIgnoreCase("SupplierDiscount");
+        Optional<SettingEntity> discountSetting = settingRepository.findByKeyIgnoreCase("supplierTransferDiscount");
         BigDecimal discountFraction = BigDecimal.ZERO;
         if (discountSetting.isPresent()) {
             BigDecimal raw = discountSetting.get().getValueNum();
@@ -54,6 +54,7 @@ public class SupplierService {
         if (profile == null || !Boolean.TRUE.equals(profile.getCanTransfer())) {
             throw new IllegalStateException("El proveedor no tiene permisos para realizar transferencias");
         }
+
         // 4. Actualizar balances
         supplier.setBalance(supplier.getBalance().subtract(totalToDebit));
         seller.setBalance(seller.getBalance().add(amount));
