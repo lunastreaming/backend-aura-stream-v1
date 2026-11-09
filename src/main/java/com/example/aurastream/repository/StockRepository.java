@@ -49,13 +49,17 @@ public interface StockRepository extends JpaRepository<StockEntity, Long>, JpaSp
     Page<StockEntity> findSalesByProviderIdPaged(UUID providerId, Pageable pageable);
 
     @Query("""
-  SELECT s FROM StockEntity s JOIN s.product p 
+  SELECT s FROM StockEntity s 
+  JOIN s.product p 
+  LEFT JOIN s.buyer b 
   WHERE p.providerId = :providerId 
     AND s.status = 'sold'
     AND (:q IS NULL OR :q = '' 
         OR LOWER(CAST(s.id AS string)) LIKE LOWER(CONCAT('%', :q, '%')) 
         OR LOWER(s.username) LIKE LOWER(CONCAT('%', :q, '%')) 
-        OR LOWER(p.name) LIKE LOWER(CONCAT('%', :q, '%')))
+        OR LOWER(p.name) LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(s.clientName) LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(b.username) LIKE LOWER(CONCAT('%', :q, '%')))
 """)
     Page<StockEntity> findSalesByProviderIdPaged(
             @Param("providerId") UUID providerId,
@@ -239,21 +243,24 @@ public interface StockRepository extends JpaRepository<StockEntity, Long>, JpaSp
   SELECT s
   FROM StockEntity s
   JOIN s.product p
+  LEFT JOIN s.buyer b
   WHERE p.providerId = :providerId
     AND s.status = 'sold'
     AND s.endAt IS NOT NULL
     AND s.endAt >= :now 
     AND s.endAt <= :limitDate
     AND (:q IS NULL OR :q = '' 
+        OR LOWER(CAST(s.id AS string)) LIKE LOWER(CONCAT('%', :q, '%')) 
         OR LOWER(s.username) LIKE LOWER(CONCAT('%', :q, '%')) 
         OR LOWER(p.name) LIKE LOWER(CONCAT('%', :q, '%'))
-        OR LOWER(CAST(s.id AS string)) LIKE LOWER(CONCAT('%', :q, '%'))) 
+        OR LOWER(s.clientName) LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(b.username) LIKE LOWER(CONCAT('%', :q, '%'))) 
 """)
     Page<StockEntity> findSalesByProviderIdAndExpiringSoonPaged(
-            @Param("providerId") java.util.UUID providerId,
+            @Param("providerId") UUID providerId,
             @Param("q") String q,
-            @Param("now") java.time.Instant now,
-            @Param("limitDate") java.time.Instant limitDate,
+            @Param("now") Instant now,
+            @Param("limitDate") Instant limitDate,
             Pageable pageable
     );
 
